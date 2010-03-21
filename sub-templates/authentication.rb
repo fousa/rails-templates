@@ -2,7 +2,7 @@ authentication_type = ask("What do you want to use as authentication mechanism?\
 if authentication_type == "http"
   apply "http://github.com/fousa/rails-templates/raw/master/sub-templates/authentication/http_authentication.rb"
 elsif authentication_type == "password"
-  puts "WARNING: Single password authentication not yet implemented"
+  apply "http://github.com/fousa/rails-templates/raw/master/sub-templates/authentication/password_authentication.rb"
 else
   puts "WARNING: NO authentication needed"
 end

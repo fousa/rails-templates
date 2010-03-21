@@ -1,7 +1,6 @@
 run "rm app/controllers/application_controller.rb"
 
-file "app/controllers/application_controller.rb", %q{
-class ApplicationController < ActionController::Base
+file "app/controllers/application_controller.rb", %q{class ApplicationController < ActionController::Base
   protect_from_forgery
 
   helper :all
