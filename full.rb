@@ -1,0 +1,1 @@
+apply "http://github.com/fousa/rails-templates/sub-templates/basic.rb"
