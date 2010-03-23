@@ -10,8 +10,10 @@ if yes? "Do you want to use jQuery?"
   run "rm public/javascripts/dragdrop.js"
   run "rm public/javascripts/effects.js"
   run "rm public/javascripts/prototype.js"
+  run "rm public/javascripts/rails.js"
 
   inside "public/javascripts" do
     run "curl -L http://code.jquery.com/jquery-1.4.1.min.js > jquery-1.4.1.min.js"
+    run "curl -L http://github.com/rails/jquery-ujs/raw/master/src/rails.js > jquery-rails.js"
   end
 end
