@@ -1,72 +1,72 @@
 file "app/models/user.rb", %q{class User
 
-include ActiveModel::Validations
+  include ActiveModel::Validations
 
-validates :password, :inclusion => { :in => ["secret"] }
+  validates :password, :inclusion => { :in => ["secret"] }
 
-attr_accessor :id,
-              :password
+  attr_accessor :id,
+                :password
 
-def initialize(options={})
-  [:password].each do |field|
-    class << self
-      self
-    end.module_eval{attr_accessor field}
-    self.send("#{field}=", options[field.to_sym])
+  def initialize(options={})
+    [:password].each do |field|
+      class << self
+        self
+      end.module_eval{attr_accessor field}
+      self.send("#{field}=", options[field.to_sym])
+    end
   end
-end
 
-def new_record?
-  true
-end
+  def new_record?
+    true
+  end
 
-d
+end
 }
 
 file "app/controllers/sessions_controller.rb", %q{class SessionsController < ApplicationController
 
-before_filter :authenticate, :except => [ :new, :create ]
+  before_filter :authenticate, :except => [ :new, :create ]
 
-def new
-  @user        = User.new
-end
-
-def create
-  @user = User.new(params[:user])
-
-  if @user.valid?
-    session[:logged_in]  = true
-    if session[:previous_page]
-      previous_uri = session[:previous_page]
-      session[:previous_page] = nil
-
-      redirect_to previous_uri, :notice => "You are now logged in to this website"
-    else
-      redirect_to root_path, :notice => "You are now logged in to this website"
-    end
-  else
-    redirect_to login_path, :alert => "You entered the wrong password"
+  def new
+    @user = User.new
   end
+
+  def create
+    @user = User.new(params[:user])
+
+    if @user.valid?
+      session[:logged_in]  = true
+      if session[:previous_page]
+        previous_uri = session[:previous_page]
+        session[:previous_page] = nil
+
+        redirect_to previous_uri, :notice => "You are now logged in to this website"
+      else
+        redirect_to root_path, :notice => "You are now logged in to this website"
+      end
+    else
+      redirect_to login_path, :alert => "You entered the wrong password"
+    end
+  end
+
+  def destroy
+    reset_session
+
+    redirect_to login_path, :notice => "You are now logged off from this website"
+  end
+
 end
-
-def destroy
-  reset_session
-
-  redirect_to login_path, :notice => "You are now logged off from this website"
-end
-
-d
 }
 
 run "rm app/controllers/application_controller.rb"
 file "app/controllers/application_controller.rb", %q{class ApplicationController < ActionController::Base
 
-helper :all
-helper_method :admin?
+  helper :all
+  helper_method :admin?
 
-protect_from_forgery
+  protect_from_forgery
 
-private
+  private
 
   def admin?
     session[:logged_in]
@@ -80,36 +80,61 @@ private
     session[:previous_page] = request.request_uri
   end
 
-d
+end
 }
 
-file "app/views/sessions/new.html.erb", %q{<h2>Please log in to this website.</h2>
+if yes? "Do you want your views to be generated with haml?"
+  file "app/views/sessions/new.html.haml", %q{%h2 Please log in to this website.
 
- if flash[:alert] -%>
-<p style="color: red;"><%= flash[:alert] %></p>
- end -%>
+- if flash[:alert]
+  %p{:style => "color: red;" }= flash[:alert]
 
- form_for @user, :url => sessions_path do |form| -%>
-<p>
-  <%= form.label :password %>
-  <br />
-  <%= form.password_field :password %>
-</p>
+- form_for @user, :url => sessions_path do |form|
+  %p
+    = form.label :password
+    %br
+    = form.password_field :password
 
-<p>
-  <%= form.submit "Login" %>
-</p>
+  %p
+    = form.submit "Login"
+  }
 
- end -%>
-}
+  file "app/views/sessions/index.html.erb", %q{%h2 You are authenticated.
 
-file "app/views/sessions/index.html.erb", %q{<h2>You are authenticated.</h2>
- if flash[:notice] -%>
-<p style="color: green;"><%= flash[:notice] %></p>
- end -%>
+- if flash[:notice]
+%p{ :style => "color: green;" }= flash[:notice]
 
-><%= link_to "logoff", logoff_path %></p>
-}
+%p= link_to "logoff", logoff_path
+  }
+else
+  file "app/views/sessions/new.html.erb", %q{<h2>Please log in to this website.</h2>
+
+<% if flash[:alert] -%>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end -%>
+
+<% form_for @user, :url => sessions_path do |form| -%>
+  <p>
+    <%= form.label :password %>
+    <br />
+    <%= form.password_field :password %>
+  </p>
+
+  <p>
+    <%= form.submit "Login" %>
+  </p>
+<% end -%>
+  }
+
+  file "app/views/sessions/index.html.erb", %q{<h2>You are authenticated.</h2>
+
+<% if flash[:notice] -%>
+  <p style="color: green;"><%= flash[:notice] %></p>
+<% end -%>
+
+<p><%= link_to "logoff", logoff_path %></p>
+  }
+end
 
 route "resources :sessions"
 route "root :to => \"sessions#index\""
