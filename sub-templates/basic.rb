@@ -1,4 +1,6 @@
 run "rm public/index.html"
+run "rm public/favicon.ico"
+run "rm public/images/rails.png"
 
 file "public/stylesheets/master.css"
 
@@ -6,18 +8,17 @@ inside "public/javascripts" do
   run "curl -L http://html5shiv.googlecode.com/svn/trunk/html5.js > html5.js"
 end
 
-if yes? "Do you want to use a config.yml file?"
+if @config_file
   initializer "load_config.rb", %q{CONFIG = File.open("#{Rails.root}/config/config.yml") { |file| YAML::load(file) }}
   file "config/config.yml"
 end
 
-haml = yes? "Do you want your views to be generated with haml?"
-if haml
+if @haml
   gem "haml"
   run "haml --rails ."
 end
 
-if yes? "Do you want to use jQuery?"
+if @jquery
   run "rm public/javascripts/controls.js"
   run "rm public/javascripts/dragdrop.js"
   run "rm public/javascripts/effects.js"
@@ -29,7 +30,7 @@ if yes? "Do you want to use jQuery?"
     run "curl -L http://github.com/rails/jquery-ujs/raw/master/src/rails.js > jquery-rails.js"
   end
 
-  if haml
+  if @haml
     file "app/views/layouts/application.html.haml", %q{
 !!!
 %html{ :lang => "en" }
@@ -67,7 +68,7 @@ if yes? "Do you want to use jQuery?"
     }
   end
 else
-  if haml
+  if @haml
     file "app/views/layouts/application.html.haml", %q{
 !!!
 %html{ :lang => "en" }

@@ -83,7 +83,7 @@ file "app/controllers/application_controller.rb", %q{class ApplicationController
 end
 }
 
-if yes? "Do you want your views to be generated with haml?"
+if @haml
   file "app/views/sessions/new.html.haml", %q{%h2 Please log in to this website.
 
 - if flash[:alert]
