@@ -4,10 +4,10 @@
 @jquery              = yes? "Do you want to use jQuery?"
 @haml                = yes? "Do you want your views to be generated with haml?"
 
-if @git = yes?"Do you want to use git?"
-  if @github = yes? "Do you have a remote repository on Github? (yes/no)"
-    @username        = ask "Enter your Github username:"
-    @repository_name = ask "Enter the name of your Github repository:"
+if @git = yes?("Do you want to use git?")
+  if @github = yes?("Do you have a remote repository on Github? (yes/no)")
+    @username        = ask("Enter your Github username:")
+    @repository_name = ask("Enter the name of your Github repository:")
   end
 end
 
