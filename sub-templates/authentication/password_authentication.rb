@@ -99,7 +99,7 @@ if @haml
     = form.submit "Login"
   }
 
-  file "app/views/sessions/index.html.erb", %q{%h2 You are authenticated.
+  file "app/views/sessions/index.html.haml", %q{%h2 You are authenticated.
 
 - if flash[:notice]
 %p{ :style => "color: green;" }= flash[:notice]
